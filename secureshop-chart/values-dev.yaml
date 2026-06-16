@@ -1,0 +1,10 @@
+replicaCount: 1
+image:
+  tag: latest
+resources:
+  limits:
+    cpu: "250m"
+    memory: "128Mi"
+  requests:
+    cpu: "125m"
+    memory: "64Mi"
