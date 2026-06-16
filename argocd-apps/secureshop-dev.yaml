@@ -1,0 +1,31 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: secureshop-dev
+  namespace: argocd
+  annotations:
+    argocd-image-updater.argoproj.io/image-list: app=ghcr.io/sirvickky001/argocd-main
+    argocd-image-updater.argoproj.io/app.update-strategy: latest
+    argocd-image-updater.argoproj.io/write-back-method: git
+    argocd-image-updater.argoproj.io/git-branch: main
+    notifications.argoproj.io/subscribe.on-sync-succeeded.slack: deployments
+    notifications.argoproj.io/subscribe.on-sync-failed.slack: deployments
+spec:
+  project: secureshop
+  source:
+    repoURL: https://github.com/Sirvickky001/argocd-main.git
+    targetRevision: main
+    path: secureshop-chart          # points at chart folder
+    helm:
+      valueFiles:
+        - values.yaml               # base values
+        - values-dev.yaml           # dev overrides
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: dev
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

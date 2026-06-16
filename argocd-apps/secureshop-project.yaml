@@ -1,0 +1,30 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: secureshop
+  namespace: argocd
+spec:
+  description: SecureShop application project
+
+  sourceRepos:
+    - https://github.com/Sirvickky001/argocd-main.git   # only this repo allowed
+
+  destinations:
+    - namespace: dev        # only these namespaces allowed
+      server: https://kubernetes.default.svc
+    - namespace: staging
+      server: https://kubernetes.default.svc
+    - namespace: prod
+      server: https://kubernetes.default.svc
+
+  clusterResourceWhitelist:
+    - group: ''
+      kind: Namespace       # allowed to create namespaces
+
+  namespaceResourceWhitelist:
+    - group: 'apps'
+      kind: Deployment      # allowed resource types
+    - group: ''
+      kind: Service
+    - group: ''
+      kind: ConfigMap
