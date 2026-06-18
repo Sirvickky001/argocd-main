@@ -1,15 +1,8 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: secureshop-dev
+  name: secureshop-staging
   namespace: argocd
-  annotations:
-    argocd-image-updater.argoproj.io/image-list: app=ghcr.io/sirvickky001/argocd-main
-    argocd-image-updater.argoproj.io/app.update-strategy: latest
-    argocd-image-updater.argoproj.io/write-back-method: git
-    argocd-image-updater.argoproj.io/git-branch: main
-    notifications.argoproj.io/subscribe.on-sync-succeeded.slack: deployments
-    notifications.argoproj.io/subscribe.on-sync-failed.slack: deployments
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
@@ -17,7 +10,11 @@ spec:
   source:
     repoURL: https://github.com/Sirvickky001/argocd-main.git
     targetRevision: main
-    path: k8s
+    path: secureshop-chart
+    helm:
+      valueFiles:
+        - values.yaml
+        - values-staging.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: staging
